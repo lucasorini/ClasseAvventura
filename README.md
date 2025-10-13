@@ -1,1 +1,1 @@
-Project link: https://lucasorini.github.io/ClasseAvventura/index.html
+Project link: https://lucasorini.github.io/ClasseAvventura/
