@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classe Avventura</title>
+    <style>
+        body {
+        	background: #202028;
+        	color: #fff;
+            font-family: 'Nunito';
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        #image-container {
+            margin-top: 20px;
+            min-height: 300px; /* Dà spazio anche prima che un'immagine venga caricata */
+        }
+        img {
+            max-width: 90%;
+            height: auto;
+            border: 2px solid #ccc;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Classe Avventura</h1>
+    <button id="random-button">Estrai una carta</button>
+    <div id="image-container">
+        <!-- <p id="image-name"></p> -->
+        <img id="random-image" src="" alt="La carta estratta apparirà qui">
+    </div>
+
+    <script>
+        // 1. I dati del JSON sono caricati direttamente in una variabile JavaScript.
+        const immaginiData = [
+          { "id": 1, "valore": "p1.jpg" },
+          { "id": 2, "valore": "p2.jpg" },
+          { "id": 3, "valore": "p3.jpg" },
+          { "id": 4, "valore": "p4.jpg" },
+          { "id": 5, "valore": "p5.jpg" },
+          { "id": 6, "valore": "p6.jpg" },
+          { "id": 7, "valore": "p7.jpg" },
+          { "id": 8, "valore": "p8.jpg" },
+          { "id": 9, "valore": "p9.jpg" },
+          { "id": 10, "valore": "p10.jpg" },
+          { "id": 11, "valore": "p11.jpg" },
+          { "id": 12, "valore": "p12.jpg" },
+          { "id": 13, "valore": "p13.jpg" },
+          { "id": 14, "valore": "p14.jpg" },
+          { "id": 15, "valore": "p15.jpg" },
+          { "id": 16, "valore": "p16.jpg" },
+          { "id": 17, "valore": "p17.jpg" },
+          { "id": 18, "valore": "p18.jpg" },
+          { "id": 19, "valore": "p19.jpg" },
+          { "id": 20, "valore": "p20.jpg" },
+          { "id": 21, "valore": "p21.jpg" },
+          { "id": 22, "valore": "p22.jpg" },
+          { "id": 23, "valore": "p23.jpg" },
+          { "id": 24, "valore": "p24.jpg" },
+          { "id": 25, "valore": "p25.jpg" },
+          { "id": 26, "valore": "p26.jpg" },
+          { "id": 27, "valore": "p27.jpg" },
+          { "id": 28, "valore": "p28.jpg" }
+        ];
+
+        // 2. Aggiungiamo un listener all'evento "click" del pulsante.
+        document.getElementById('random-button').addEventListener('click', () => {
+            // Calcoliamo un indice casuale basato sulla lunghezza dell'array.
+            const randomIndex = Math.floor(Math.random() * immaginiData.length);
+            
+            // Prendiamo l'oggetto immagine corrispondente all'indice casuale.
+            const immagineCasuale = immaginiData[randomIndex];
+
+            // 3. Aggiorniamo l'HTML per mostrare l'immagine e le sue informazioni.
+            // Selezioniamo l'elemento <img> e cambiamo il suo attributo "src".
+            document.getElementById('random-image').src = immagineCasuale.valore;
+            
+            // Aggiorniamo il paragrafo con il nome del file.
+            document.getElementById('image-name').textContent = `File: ${immagineCasuale.valore}`;
+        });
+    </script>
+
+</body>
+</html>
