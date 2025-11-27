@@ -35,56 +35,110 @@
     <button id="random-button">Estrai una carta</button>
     <div id="image-container">
         <!-- <p id="image-name"></p> -->
+        <p id="image-name"></p>
         <img id="random-image" src="" alt="La carta estratta apparirà qui">
     </div>
 
     <script>
-        // 1. I dati del JSON sono caricati direttamente in una variabile JavaScript.
-        const immaginiData = [
-          { "id": 1, "valore": "p1.jpg" },
-          { "id": 2, "valore": "p2.jpg" },
-          { "id": 3, "valore": "p3.jpg" },
-          { "id": 4, "valore": "p4.jpg" },
-          { "id": 5, "valore": "p5.jpg" },
-          { "id": 6, "valore": "p6.jpg" },
-          { "id": 7, "valore": "p7.jpg" },
-          { "id": 8, "valore": "p8.jpg" },
-          { "id": 9, "valore": "p9.jpg" },
-          { "id": 10, "valore": "p10.jpg" },
-          { "id": 11, "valore": "p11.jpg" },
-          { "id": 12, "valore": "p12.jpg" },
-          { "id": 13, "valore": "p13.jpg" },
-          { "id": 14, "valore": "p14.jpg" },
-          { "id": 15, "valore": "p15.jpg" },
-          { "id": 16, "valore": "p16.jpg" },
-          { "id": 17, "valore": "p17.jpg" },
-          { "id": 18, "valore": "p18.jpg" },
-          { "id": 19, "valore": "p19.jpg" },
-          { "id": 20, "valore": "p20.jpg" },
-          { "id": 21, "valore": "p21.jpg" },
-          { "id": 22, "valore": "p22.jpg" },
-          { "id": 23, "valore": "p23.jpg" },
-          { "id": 24, "valore": "p24.jpg" },
-          { "id": 25, "valore": "p25.jpg" },
-          { "id": 26, "valore": "p26.jpg" },
-          { "id": 27, "valore": "p27.jpg" },
-          { "id": 28, "valore": "p28.jpg" }
-        ];
+        // I dati originali rimangono gli stessi
+    const immaginiData = [
+        { "id": 1, "valore": "p1.jpg" },
+        { "id": 2, "valore": "p2.jpg" },
+        { "id": 3, "valore": "p3.jpg" },
+        { "id": 4, "valore": "p4.jpg" },
+        { "id": 5, "valore": "p5.jpg" },
+        { "id": 6, "valore": "p6.jpg" },
+        { "id": 7, "valore": "p7.jpg" },
+        { "id": 8, "valore": "p8.jpg" },
+        { "id": 9, "valore": "p9.jpg" },
+        { "id": 10, "valore": "p10.jpg" },
+        { "id": 11, "valore": "p11.jpg" },
+        { "id": 12, "valore": "p12.jpg" },
+        { "id": 13, "valore": "p13.jpg" },
+        { "id": 14, "valore": "p14.jpg" },
+        { "id": 15, "valore": "p15.jpg" },
+        { "id": 16, "valore": "p16.jpg" },
+        { "id": 17, "valore": "p17.jpg" },
+        { "id": 18, "valore": "p18.jpg" },
+        { "id": 19, "valore": "p19.jpg" },
+        { "id": 20, "valore": "p20.jpg" },
+        { "id": 21, "valore": "p21.jpg" },
+        { "id": 22, "valore": "p22.jpg" },
+        { "id": 23, "valore": "p23.jpg" },
+        { "id": 24, "valore": "p24.jpg" },
+        { "id": 25, "valore": "p25.jpg" },
+        { "id": 26, "valore": "p26.jpg" },
+        { "id": 27, "valore": "p27.jpg" },
+        { "id": 28, "valore": "p28.jpg" }
+    ];
+
+    let carteDisponibili = [];
+        const bottone = document.getElementById('random-button');
+
+        // Funzione asincrona per caricare i dati e lo storico
+        async function caricaStorico() {
+            try {
+                // Tenta di leggere il file Storico.txt.
+                // DEVE essere eseguito su un server web!
+                const risposta = await fetch('Storico.txt');
+                if (!risposta.ok) {
+                    throw new Error(`Errore HTTP: ${risposta.status}`);
+                }
+                const testoStorico = await risposta.text();
+                
+                // Converte il testo letto (es. "1,3,5\n7\n9") in un array di ID numerici
+                // che devono essere esclusi.
+                const idsStorico = testoStorico
+                    .split(/[\n,]+/) // Divide per virgole o interruzioni di riga
+                    .map(s => parseInt(s.trim())) // Converte in numero intero
+                    .filter(n => !isNaN(n)); // Filtra valori non numerici
+
+                // Filtra l'array originale, escludendo le carte il cui ID è nello storico
+                carteDisponibili = immaginiData.filter(carta => 
+                    !idsStorico.includes(carta.id)
+                );
+                
+                if (carteDisponibili.length === 0) {
+                    document.getElementById('image-name').textContent = "Tutte le carte sono state estratte!";
+                    bottone.disabled = true;
+                } else {
+                    document.getElementById('image-name').textContent = `Carte rimanenti: ${carteDisponibili.length}`;
+                    bottone.disabled = false;
+                }
+                
+            } catch (errore) {
+                console.error("Errore nel caricamento dello storico, usando tutte le carte:", errore);
+                // Se c'è un errore (es. file non trovato), usiamo l'elenco completo
+                carteDisponibili = immaginiData;
+                bottone.disabled = false;
+                document.getElementById('image-name').textContent = `Impossibile caricare Storico.txt. Tutte le ${carteDisponibili.length} carte disponibili.`;
+            }
+        }
+        
+        // Carica lo storico all'avvio
+        caricaStorico();
+
 
         // 2. Aggiungiamo un listener all'evento "click" del pulsante.
-        document.getElementById('random-button').addEventListener('click', () => {
-            // Calcoliamo un indice casuale basato sulla lunghezza dell'array.
-            const randomIndex = Math.floor(Math.random() * immaginiData.length);
+        bottone.addEventListener('click', () => {
+            if (carteDisponibili.length === 0) {
+                document.getElementById('image-name').textContent = "Non ci sono più carte da estrarre!";
+                return;
+            }
+
+            // Calcoliamo un indice casuale basato sulla lunghezza dell'array FILTRATO.
+            const randomIndex = Math.floor(Math.random() * carteDisponibili.length);
             
-            // Prendiamo l'oggetto immagine corrispondente all'indice casuale.
-            const immagineCasuale = immaginiData[randomIndex];
+            // Prendiamo l'oggetto immagine corrispondente.
+            const immagineCasuale = carteDisponibili[randomIndex];
 
             // 3. Aggiorniamo l'HTML per mostrare l'immagine e le sue informazioni.
-            // Selezioniamo l'elemento <img> e cambiamo il suo attributo "src".
             document.getElementById('random-image').src = immagineCasuale.valore;
+            document.getElementById('image-name').textContent = `ID: ${immagineCasuale.id} | File: ${immagineCasuale.valore}`;
             
-            // Aggiorniamo il paragrafo con il nome del file.
-            document.getElementById('image-name').textContent = `File: ${immagineCasuale.valore}`;
+            // OPZIONALE: Rimuove la carta estratta dall'array disponibile
+            // carteDisponibili.splice(randomIndex, 1);
+            // document.getElementById('image-name').textContent += ` | Rimanenti: ${carteDisponibili.length}`;
         });
     </script>
 
